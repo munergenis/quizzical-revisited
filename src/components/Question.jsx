@@ -3,7 +3,7 @@ import { useId } from 'react'
 const Question = (props) => {
   const id = useId()
 
-  const baseAnswerStyle = 'px-4 py-4 w-full h-full text-sm text-center md:text-base rounded-xl border-[1px] flex items-center justify-center'
+  const baseAnswerStyle = 'px-4 py-4 w-full h-full text-sm text-center md:text-base rounded-xl border-[1px] flex items-center justify-center transition-all'
 
   return (
     <div className='w-full flex flex-col gap-6'>
@@ -56,10 +56,8 @@ function getAnswerStyle (userAnswers, i, answerValue) {
 
   if (userAnswers[i].selectedAnswer === answerValue) {
     answerStyle = answersStyles.selectedAnswerStyle
-    // console.log(answerValue, 'selected')
   } else {
     answerStyle = answersStyles.unselectedAnswerStyle
-    // console.log(answerValue, 'not selected')
   }
 
   return answerStyle

@@ -5,10 +5,14 @@ import { useState } from 'react'
 const Quizz = () => {
   const [questions, setQuestions] = useState([])
   const [userAnswers, setUserAnswers] = useState([])
-  // console.log(questions)
-  // console.log(userAnswers)
+  const [isQuizzSubmitted, setIsQuizzSubmitted] = useState(false)
+  const [auxiliarText, setAuxiliarText] = useState({ isShown: false, text: '', color: '' })
 
   useEffect(() => {
+    fetchData()
+  }, [])
+
+  function fetchData () {
     fetch('https://opentdb.com/api.php?amount=10')
       .then(res => res.json())
       .then(({ results }) => {
@@ -21,7 +25,7 @@ const Quizz = () => {
           randomOrderAnswers: [result.correct_answer, ...result.incorrect_answers].sort(() => Math.random() - 0.5),
         })))
       })
-  }, [])
+  }
 
   useEffect(() => {
     if (questions) {
@@ -37,10 +41,44 @@ const Quizz = () => {
     setUserAnswers(prevAnswers => prevAnswers.map(answer => answer.id === questionID ? { ...answer, selectedAnswer: answerValue } : answer))
   }
 
+  function checkAnswers (e) {
+    e.preventDefault()
+    setAuxiliarText({ isShown: false, text: '', color: '' })
+
+    if (userAnswers.some(answer => answer.selectedAnswer === null)) {
+      setAuxiliarText({ isShown: true, text: 'Answer all the questions', color: 'text-red-900' })
+      return
+    }
+
+    console.log('TODO: chekcing answers')
+    setAuxiliarText({ isShown: true, text: 'Correct answers: 3/5', color: 'text-blue-900' })
+
+    setIsQuizzSubmitted(true)
+  }
+
+  function requestAnotherQuizz (e) {
+    e.preventDefault()
+
+    fetchData()
+
+    setAuxiliarText({ isShown: false, text: '', color: '' })
+
+    console.log('reseting quizz')
+  }
+
   return (
     <form className='w-full flex flex-col justify-start items-center gap-8 container'>
       <h1 className='font-karla text-3xl font-extrabold text-blue-900 opacity-90 mb-8 underline md:text-4xl'>Quizzical</h1>
+
       {questions.map((question, index) => <Question key={question.id} question={question} questionIndex={index} userAnswers={userAnswers} handleUserAnswers={handleUserAnswers} />)}
+
+      {auxiliarText.isShown && <p className={auxiliarText.color + ' text-lg'}>{auxiliarText.text}</p>}
+      <button
+        className='w-full md:w-fit px-6 py-4 bg-blue-900 text-white md:text-lg rounded-lg hover:opacity-90 active:opacity-80 transition-all'
+        onClick={isQuizzSubmitted ? requestAnotherQuizz : checkAnswers}
+      >
+        {isQuizzSubmitted ? 'Try again' : 'Check answers'}
+      </button>
     </form>
   )
 }
