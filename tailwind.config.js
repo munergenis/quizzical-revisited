@@ -5,7 +5,12 @@ export default {
     'src/**/*.{js,jsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        karla: 'Karla, sans-serif',
+        inter: 'Inter, sans-serif',
+      },
+    },
   },
   plugins: [],
 }
