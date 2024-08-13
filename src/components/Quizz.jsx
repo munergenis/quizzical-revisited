@@ -17,14 +17,27 @@ const Quizz = () => {
     fetch('https://opentdb.com/api.php?amount=10')
       .then(res => res.json())
       .then(({ results }) => {
-        setQuestions(results.map(result => ({
-          id: result.question,
-          type: result.type,
-          question: result.question,
-          correctAnswer: result.correct_answer,
-          incorrectAnswers: result.incorrect_answers,
-          randomOrderAnswers: [result.correct_answer, ...result.incorrect_answers].sort(() => Math.random() - 0.5),
-        })))
+        setQuestions(results.map(result => {
+          const correctAnswer = {
+            id: nanoid(),
+            value: result.correct_answer,
+          }
+
+          const incorrectAnswers = result.incorrect_answers.map(answer => ({
+            id: nanoid(),
+            value: answer,
+          }))
+          return (
+            {
+              id: nanoid(),
+              type: result.type,
+              question: result.question,
+              correctAnswer,
+              incorrectAnswers,
+              randomOrderAnswers: [correctAnswer, ...incorrectAnswers].sort(() => Math.random() - 0.5),
+            }
+          )
+        }))
       })
   }
 
@@ -38,8 +51,8 @@ const Quizz = () => {
     }
   }, [questions])
 
-  function handleUserAnswers (questionID, answerValue) {
-    setUserAnswers(prevAnswers => prevAnswers.map(answer => answer.id === questionID ? { ...answer, selectedAnswer: answerValue } : answer))
+  function handleUserAnswers (questionID, answerID) {
+    setUserAnswers(prevAnswers => prevAnswers.map(answer => answer.id === questionID ? { ...answer, selectedAnswer: answerID } : answer))
   }
 
   function checkAnswers (e) {
@@ -54,7 +67,7 @@ const Quizz = () => {
     setIsQuizzSubmitted(true)
 
     const finalCorrectAnswers = questions.reduce((acc, curr, currIndex) => {
-      if (curr.correctAnswer === userAnswers[currIndex].selectedAnswer) {
+      if (curr.correctAnswer.id === userAnswers[currIndex].selectedAnswer) {
         return acc + 1
       } else {
         return acc

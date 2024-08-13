@@ -11,26 +11,26 @@ const Question = (props) => {
       <div className='flex flex-col md:flex-row gap-4'>
 
         {props.question.randomOrderAnswers.map((answer, i) => {
-          const answerStyle = getAnswerStyle(props.userAnswers, props.questionIndex, answer)
+          const answerStyle = getAnswerStyle(props.userAnswers, props.questionIndex, answer.id, props.isQuizzSubmitted)
 
           return (
             <div
-              key={answer}
+              key={answer.id}
               className='min-w-32 min-h-7 flex-grow-1 lg:flex-grow-0 flex'
             >
               <label
                 className={`${baseAnswerStyle} ${answerStyle}`}
                 htmlFor={`${id}-answer-${i + 1}`}
               >
-                {answer}
+                {answer.value}
               </label>
               <input
                 type='radio'
                 name={id}
                 id={`${id}-answer-${i + 1}`}
-                value={answer}
+                value={answer.value}
                 hidden
-                onChange={() => props.handleUserAnswers(props.question.id, answer)}
+                onChange={() => props.handleUserAnswers(props.question.id, answer.id)}
               />
             </div>
           )
@@ -49,12 +49,12 @@ const answersStyles = {
   failedAnswerStyle: 'bg-red-200 border-red-200 text-slate-400 hover:cursor-default',
 }
 
-function getAnswerStyle (userAnswers, i, answerValue) {
+function getAnswerStyle (userAnswers, i, answerID, isQuizzSubmitted) {
   if (!userAnswers.length) return
 
   let answerStyle
 
-  if (userAnswers[i].selectedAnswer === answerValue) {
+  if (userAnswers[i].selectedAnswer === answerID) {
     answerStyle = answersStyles.selectedAnswerStyle
   } else {
     answerStyle = answersStyles.unselectedAnswerStyle
