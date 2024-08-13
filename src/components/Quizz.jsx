@@ -51,15 +51,25 @@ const Quizz = () => {
     }
 
     console.log('TODO: chekcing answers')
-    setAuxiliarText({ isShown: true, text: 'Correct answers: 3/5', color: 'text-blue-900' })
-
     setIsQuizzSubmitted(true)
+    console.log(questions)
+    console.log(userAnswers)
+    const finalCorrectAnswers = questions.reduce((acc, curr, currIndex) => {
+      console.log(acc)
+      if (curr.correctAnswer === userAnswers[currIndex].selectedAnswer) {
+        return acc + 1
+      } else {
+        return acc
+      }
+    }, 0)
+    setAuxiliarText({ isShown: true, text: `Correct answers: ${finalCorrectAnswers}/5`, color: 'text-blue-900' })
   }
 
   function requestAnotherQuizz (e) {
     e.preventDefault()
 
     fetchData()
+    setIsQuizzSubmitted(false)
 
     setAuxiliarText({ isShown: false, text: '', color: '' })
 
