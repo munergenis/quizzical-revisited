@@ -1,6 +1,7 @@
 import Question from 'components/Question.jsx'
 import { useEffect } from 'react'
 import { useState } from 'react'
+import { nanoid } from 'nanoid'
 
 const Quizz = () => {
   const [questions, setQuestions] = useState([])
@@ -50,19 +51,17 @@ const Quizz = () => {
       return
     }
 
-    console.log('TODO: chekcing answers')
     setIsQuizzSubmitted(true)
-    console.log(questions)
-    console.log(userAnswers)
+
     const finalCorrectAnswers = questions.reduce((acc, curr, currIndex) => {
-      console.log(acc)
       if (curr.correctAnswer === userAnswers[currIndex].selectedAnswer) {
         return acc + 1
       } else {
         return acc
       }
     }, 0)
-    setAuxiliarText({ isShown: true, text: `Correct answers: ${finalCorrectAnswers}/5`, color: 'text-blue-900' })
+
+    setAuxiliarText({ isShown: true, text: `Correct answers: ${finalCorrectAnswers}/${questions.length}`, color: 'text-blue-900' })
   }
 
   function requestAnotherQuizz (e) {
@@ -72,15 +71,22 @@ const Quizz = () => {
     setIsQuizzSubmitted(false)
 
     setAuxiliarText({ isShown: false, text: '', color: '' })
-
-    console.log('reseting quizz')
   }
 
   return (
     <form className='w-full flex flex-col justify-start items-center gap-8 container'>
       <h1 className='font-karla text-3xl font-extrabold text-blue-900 opacity-90 mb-8 underline md:text-4xl'>Quizzical</h1>
 
-      {questions.map((question, index) => <Question key={question.id} question={question} questionIndex={index} userAnswers={userAnswers} handleUserAnswers={handleUserAnswers} />)}
+      {questions.map((question, index) =>
+        <Question
+          key={question.id}
+          question={question}
+          questionIndex={index}
+          userAnswers={userAnswers}
+          handleUserAnswers={handleUserAnswers}
+          isQuizzSubmitted={isQuizzSubmitted}
+        />
+      )}
 
       {auxiliarText.isShown && <p className={auxiliarText.color + ' text-lg'}>{auxiliarText.text}</p>}
       <button
