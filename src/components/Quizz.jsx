@@ -5,7 +5,8 @@ import { useState } from 'react'
 const Quizz = () => {
   const [questions, setQuestions] = useState([])
   const [userAnswers, setUserAnswers] = useState([])
-  console.log(userAnswers)
+  // console.log(questions)
+  // console.log(userAnswers)
 
   useEffect(() => {
     fetch('https://opentdb.com/api.php?amount=10')
@@ -32,14 +33,14 @@ const Quizz = () => {
     }
   }, [questions])
 
-  function handleUserAnswers (answerID, answerValue) {
-    setUserAnswers(prevAnswers => prevAnswers.map(answer => answer.id === answerID ? { ...answer, selectedAnswer: answerValue } : answer))
+  function handleUserAnswers (questionID, answerValue) {
+    setUserAnswers(prevAnswers => prevAnswers.map(answer => answer.id === questionID ? { ...answer, selectedAnswer: answerValue } : answer))
   }
 
   return (
     <form className='w-full flex flex-col justify-start items-center gap-8 container'>
       <h1 className='font-karla text-3xl font-extrabold text-blue-900 opacity-90 mb-8 underline md:text-4xl'>Quizzical</h1>
-      {questions.map(question => <Question key={question.id} question={question} userAnswers={userAnswers} handleUserAnswers={handleUserAnswers} />)}
+      {questions.map((question, index) => <Question key={question.id} question={question} questionIndex={index} userAnswers={userAnswers} handleUserAnswers={handleUserAnswers} />)}
     </form>
   )
 }

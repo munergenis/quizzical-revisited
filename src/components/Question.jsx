@@ -11,7 +11,7 @@ const Question = (props) => {
       <div className='flex flex-col md:flex-row gap-4'>
 
         {props.question.randomOrderAnswers.map((answer, i) => {
-          const answerStyle = getAnswerStyle(props.userAnswers, i, answer)
+          const answerStyle = getAnswerStyle(props.userAnswers, props.questionIndex, answer)
 
           return (
             <div
@@ -20,76 +20,21 @@ const Question = (props) => {
             >
               <label
                 className={`${baseAnswerStyle} ${answerStyle}`}
-                htmlFor={`${id}-answer1`}
+                htmlFor={`${id}-answer-${i + 1}`}
               >
                 {answer}
               </label>
               <input
                 type='radio'
                 name={id}
-                id={`${id}-answer1`}
+                id={`${id}-answer-${i + 1}`}
                 value={answer}
                 hidden
+                onChange={() => props.handleUserAnswers(props.question.id, answer)}
               />
             </div>
           )
         })}
-
-        {/* <label
-          className={`${baseAnswerStyle} ${failedAnswerStyle}`}
-          htmlFor={`${id}-answer1`}
-        >
-          Adiósas dfasdf
-        </label>
-        <input
-          type='radio'
-          name={id}
-          id={`${id}-answer1`}
-          value='Adiós'
-          hidden
-        /> */}
-
-        {/* <label
-          className={answerStyle}
-          htmlFor={`${id}-answer2`}
-        >
-          Holaasd fasdfas
-        </label>
-        <input
-          type='radio'
-          name={id}
-          id={`${id}-answer2`}
-          value='Hola'
-          hidden
-        />
-
-        <label
-          className={answerStyle}
-          htmlFor={`${id}-answer3`}
-        >
-          Au Revoirasdf asdfadf
-        </label>
-        <input
-          type='radio'
-          name={id}
-          id={`${id}-answer3`}
-          value='Au Revoir'
-          hidden
-        />
-
-        <label
-          className={answerStyle}
-          htmlFor={`${id}-answer4`}
-        >
-          Salirasdf asdfasd
-        </label>
-        <input
-          type='radio'
-          name={id}
-          id={`${id}-answer4`}
-          value='Salir'
-          hidden
-        /> */}
       </div>
       <hr />
     </div>
@@ -105,12 +50,16 @@ const answersStyles = {
 }
 
 function getAnswerStyle (userAnswers, i, answerValue) {
+  if (!userAnswers.length) return
+
   let answerStyle
 
-  if (userAnswers[i]?.selectedAnswer === answerValue) {
+  if (userAnswers[i].selectedAnswer === answerValue) {
     answerStyle = answersStyles.selectedAnswerStyle
+    // console.log(answerValue, 'selected')
   } else {
     answerStyle = answersStyles.unselectedAnswerStyle
+    // console.log(answerValue, 'not selected')
   }
 
   return answerStyle
