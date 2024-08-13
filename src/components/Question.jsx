@@ -11,7 +11,7 @@ const Question = (props) => {
       <div className='flex flex-col md:flex-row gap-4'>
 
         {props.question.randomOrderAnswers.map((answer, i) => {
-          const answerStyle = getAnswerStyle(props.userAnswers, props.questionIndex, answer.id, props.isQuizzSubmitted)
+          const answerStyle = getAnswerStyle(props.userAnswers, props.question.correctAnswer.id, props.questionIndex, answer.id, props.isQuizzSubmitted)
 
           return (
             <div
@@ -49,15 +49,25 @@ const answersStyles = {
   failedAnswerStyle: 'bg-red-200 border-red-200 text-slate-400 hover:cursor-default',
 }
 
-function getAnswerStyle (userAnswers, i, answerID, isQuizzSubmitted) {
+function getAnswerStyle (userAnswers, correctAnswerID, i, answerID, isQuizzSubmitted) {
   if (!userAnswers.length) return
 
   let answerStyle
 
-  if (userAnswers[i].selectedAnswer === answerID) {
-    answerStyle = answersStyles.selectedAnswerStyle
+  if (!isQuizzSubmitted) {
+    if (userAnswers[i].selectedAnswer === answerID) {
+      answerStyle = answersStyles.selectedAnswerStyle
+    } else {
+      answerStyle = answersStyles.unselectedAnswerStyle
+    }
   } else {
-    answerStyle = answersStyles.unselectedAnswerStyle
+    if (answerID === correctAnswerID) {
+      answerStyle = answersStyles.correctAnswerStyle
+    } else if (userAnswers[i].selectedAnswer === answerID) {
+      answerStyle = answersStyles.failedAnswerStyle
+    } else {
+      answerStyle = answersStyles.incorrectAnswerStyle
+    }
   }
 
   return answerStyle

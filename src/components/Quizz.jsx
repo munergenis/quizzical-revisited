@@ -10,8 +10,10 @@ const Quizz = () => {
   const [auxiliarText, setAuxiliarText] = useState({ isShown: false, text: '', color: '' })
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (!isQuizzSubmitted) {
+      fetchData()
+    }
+  }, [isQuizzSubmitted])
 
   function fetchData () {
     fetch('https://opentdb.com/api.php?amount=10')
@@ -80,10 +82,10 @@ const Quizz = () => {
   function requestAnotherQuizz (e) {
     e.preventDefault()
 
-    fetchData()
     setIsQuizzSubmitted(false)
 
     setAuxiliarText({ isShown: false, text: '', color: '' })
+    // fetchData()
   }
 
   return (
