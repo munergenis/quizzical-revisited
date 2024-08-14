@@ -1,9 +1,9 @@
 import Question from 'components/Question.jsx'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { nanoid } from 'nanoid'
+import fetchQuizzData from 'services/quizzApi'
 
-const Quizz = () => {
+const Quizz = (props) => {
   const [questions, setQuestions] = useState([])
   const [userAnswers, setUserAnswers] = useState([])
   const [isQuizzSubmitted, setIsQuizzSubmitted] = useState(false)
@@ -11,37 +11,10 @@ const Quizz = () => {
 
   useEffect(() => {
     if (!isQuizzSubmitted) {
-      fetchData()
+      fetchQuizzData(props.questionCount)
+        .then(data => setQuestions(data))
     }
   }, [isQuizzSubmitted])
-
-  function fetchData () {
-    fetch('https://opentdb.com/api.php?amount=10')
-      .then(res => res.json())
-      .then(({ results }) => {
-        setQuestions(results.map(result => {
-          const correctAnswer = {
-            id: nanoid(),
-            value: result.correct_answer,
-          }
-
-          const incorrectAnswers = result.incorrect_answers.map(answer => ({
-            id: nanoid(),
-            value: answer,
-          }))
-          return (
-            {
-              id: nanoid(),
-              type: result.type,
-              question: result.question,
-              correctAnswer,
-              incorrectAnswers,
-              randomOrderAnswers: [correctAnswer, ...incorrectAnswers].sort(() => Math.random() - 0.5),
-            }
-          )
-        }))
-      })
-  }
 
   useEffect(() => {
     if (questions) {
@@ -82,10 +55,10 @@ const Quizz = () => {
   function requestAnotherQuizz (e) {
     e.preventDefault()
 
+    // fetchQuizzData()
     setIsQuizzSubmitted(false)
 
     setAuxiliarText({ isShown: false, text: '', color: '' })
-    // fetchData()
   }
 
   return (
