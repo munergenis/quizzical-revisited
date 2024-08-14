@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import he from 'he'
 
 const END_POINT = 'https://opentdb.com/api.php'
 
@@ -14,18 +15,18 @@ function fetchData (questionCount) {
         return results.map(result => {
           const correctAnswer = {
             id: nanoid(),
-            value: result.correct_answer,
+            value: he.decode(result.correct_answer),
           }
 
           const incorrectAnswers = result.incorrect_answers.map(answer => ({
             id: nanoid(),
-            value: answer,
+            value: he.decode(answer),
           }))
           return (
             {
               id: nanoid(),
               type: result.type,
-              question: result.question,
+              question: he.decode(result.question),
               correctAnswer,
               incorrectAnswers,
               randomOrderAnswers: [correctAnswer, ...incorrectAnswers].sort(() => Math.random() - 0.5),
